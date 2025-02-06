@@ -45,13 +45,17 @@ Think of it like this:
 
 ```bash
 # 1. Clone this project
-git clone https://github.com/yourusername/gpt2-from-scratch.git
+git clone https://github.com/AIMLRLab/gpt2.git
 
-# 2. Install required packages
+# 2. Create and activate virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 3. Install required packages
 pip install -r requirements.txt
 
-# 3. Run the training
-python train.py
+# 4. Run the training
+python gpt2.py
 ```
 
 ## 📊 Model Details
@@ -72,6 +76,13 @@ numbers     info         pattern recognition
 - **Learning Rate**: 0.001 (how fast it learns)
 - **Model Size**: 124M parameters (like 124M knobs to tune)
 
+### What These Numbers Mean
+
+- **Batch Size**: Like solving 16 math problems at once
+- **Context Length**: How many words it reads at once (like your short-term memory)
+- **Learning Rate**: How big steps it takes when learning (too big = stumble, too small = slow)
+- **Model Size**: How many "brain cells" it has (more = smarter but slower)
+
 ## 💡 Example Usage
 
 ```python
@@ -86,7 +97,7 @@ generated_text = model.generate(prompt, max_length=100)
 print(generated_text)
 ```
 
-## 📈 Training Progress
+## �� Training Progress
 
 Watch your model learn:
 
@@ -125,10 +136,12 @@ Remember:
 
 Join our learning journey!
 
-1. Fork the project
-2. Create your feature branch
+1. Fork [the repository](https://github.com/AIMLRLab/gpt2)
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Add your improvements
-4. Submit a pull request
+4. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+5. Push to the branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
 
 ## 📝 License
 
@@ -136,8 +149,8 @@ MIT - Use it, learn from it, share it!
 
 ## 🙋‍♂️ Questions?
 
-- Open an issue
-- Start a discussion
+- [Open an issue](https://github.com/AIMLRLab/gpt2/issues)
+- Start a [discussion](https://github.com/AIMLRLab/gpt2/discussions)
 - Join our Discord community
 
 Remember: The goal is learning - don't be afraid to experiment and make mistakes!
