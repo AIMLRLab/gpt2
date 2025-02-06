@@ -79,6 +79,16 @@ class GPT(nn.Module):
         pos = torch.arange(0, T, dtype=torch.long, device=self.device)
         pos_emb = self.position_embedding(pos)
 
+        # Add token visualization
+        if logger.isEnabledFor(logging.DEBUG):
+            sample_tokens = idx[0][:10].tolist()  # First sequence, first 10 tokens
+            decoded = tokenizer.decode(sample_tokens)
+            logger.debug("\nInput Sample:")
+            logger.debug(f"Tokens: {sample_tokens}")
+            logger.debug(f"Decoded: {decoded}")
+            logger.debug(f"Embedding activations (mean): {tok_emb[0, :3].mean().item():.3f}")
+            logger.debug(f"Position encodings (mean): {pos_emb[:3].mean().item():.3f}")
+
         # Combine embeddings
         x = tok_emb + pos_emb
 
@@ -102,16 +112,34 @@ class GPT(nn.Module):
         """
         Generate text from the model.
 
-        Args:
-            idx (torch.Tensor): Starting token indices
-            max_new_tokens (int): Number of tokens to generate
-            temperature (float): Sampling temperature (higher = more random)
-            top_k (int, optional): Limit sampling to top k tokens
+        How it works:
+        1. Start with input tokens (like "Once upon")
+        2. For each new token:
+            - Look at previous tokens (context window)
+            - Calculate probability of each possible next word
+            - Adjust probabilities with temperature
+              (higher = more creative, lower = more focused)
+            - Sample next token from these probabilities
+            - Add token to sequence and repeat
 
-        Returns:
-            torch.Tensor: Generated token indices
+        The temperature parameter:
+        - 0.9 (default): Balanced between creativity and focus
+        - 0.7: More focused, logical completions
+        - 1.2: More creative, varied outputs
+
+        Top-k sampling:
+        - Only consider the k most likely next tokens
+        - Helps prevent generating nonsense words
+        - Balances creativity with coherence
         """
-        for _ in range(max_new_tokens):
+        logger.info(f"Generating {max_new_tokens} tokens with temperature={temperature}")
+        if top_k:
+            logger.info(f"Using top-k sampling with k={top_k}")
+
+        for i in range(max_new_tokens):
+            # Log progress every 20 tokens
+            if i % 20 == 0:
+                logger.debug(f"Generated {i}/{max_new_tokens} tokens")
             # Crop sequence if needed
             idx_cond = idx if idx.size(1) <= self.block_size else idx[:, -self.block_size:]
 
@@ -136,6 +164,7 @@ class GPT(nn.Module):
 class TransformerBlock(nn.Module):
     def __init__(self, d_model, n_heads):
         super().__init__()
+        logger.debug(f"Initializing TransformerBlock with d_model={d_model}, n_heads={n_heads}")
         self.ln1 = nn.LayerNorm(d_model)
         self.ln2 = nn.LayerNorm(d_model)
         self.attn = MultiHeadAttention(d_model, n_heads)
@@ -155,6 +184,7 @@ class TransformerBlock(nn.Module):
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_model, n_heads):
         super().__init__()
+        logger.debug(f"Initializing MultiHeadAttention with d_model={d_model}, n_heads={n_heads}")
         assert d_model % n_heads == 0
 
         self.d_model = d_model

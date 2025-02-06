@@ -4,9 +4,27 @@ from gpt2 import GPT
 import time
 import os
 import sys
+import logging
+import datetime
+
+# Configure logging
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(f'logs/chat_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 def load_trained_model():
     """Load our trained GPT-2 model"""
+    logger.info("Starting model loading process")
     print("\n" + "="*50)
     print("🤖 Loading Your Trained AI Model")
     print("="*50)
@@ -53,9 +71,19 @@ def load_trained_model():
 
 def chat():
     """Interactive chat with your trained GPT-2"""
-    # Load model and tokenizer
+    logger.info("Starting chat session")
     model = load_trained_model()
     enc = tiktoken.get_encoding("gpt2")
+
+    # Get checkpoint info
+    checkpoint = torch.load('model_checkpoint_final.pt', map_location=model.device)
+    final_loss = checkpoint.get('loss', 'N/A')
+
+    # Add model quality check with checkpoint loss
+    logger.info(f"Model quality indicators:")
+    logger.info(f"- Final loss: {final_loss:.4f}")
+    logger.info(f"- Vocabulary size: {model.vocab_size:,} tokens")
+    logger.info(f"- Model parameters: {sum(p.numel() for p in model.parameters()):,}")
 
     print("\n" + "="*50)
     print("🤖 Chat with Your AI")
@@ -64,42 +92,94 @@ def chat():
     print("Tips:")
     print("- Keep prompts clear and specific")
     print("- Type 'quit' to exit")
+    print(f"- Current model loss: {final_loss:.4f}")
 
     while True:
         prompt = input("\n😊 You: ").strip()
+        logger.info(f"User prompt: {prompt}")
 
         if prompt.lower() in ['quit', 'exit', 'q']:
+            logger.info("Chat session ended by user")
             print("\n👋 Thanks for chatting!")
             break
+
+        if prompt.lower() == 'debug':
+            logger.setLevel(logging.DEBUG)
+            print("\n🔍 Debug mode activated! You'll now see:")
+            print("- Token probabilities")
+            print("- Embedding activations")
+            print("- Attention patterns")
+            continue
 
         if prompt:
             try:
                 print("\n🤖 AI: ", end="", flush=True)
-
-                # Use the newer API for encoding
                 input_ids = torch.tensor(
                     enc.encode(prompt, disallowed_special=())
                 ).unsqueeze(0).to(model.device)
 
+                generated_text = ""
+
                 with torch.no_grad():
-                    for _ in range(100):
+                    for i in range(100):
                         logits, _ = model(input_ids)
                         next_token_logits = logits[0, -1, :] / 0.7
+                        next_token_logits[next_token_logits < -1] = -float('Inf')
 
                         probs = torch.softmax(next_token_logits, dim=-1)
                         next_token = torch.multinomial(probs, num_samples=1)
 
+                        # Get token info
+                        token_id = next_token.item()
+                        token_text = enc.decode([token_id])
+                        token_prob = probs[token_id].item()
+
+                        # Clear previous line and show token details
+                        print(f"\r{'='*100}", flush=True)
+                        print(f"\r🔄 Token #{i+1:3d}", end=' ', flush=True)
+                        print(f"│ ID: {token_id:5d}", end=' ', flush=True)
+                        print(f"│ Text: {token_text!r:<15}", end=' ', flush=True)
+                        print(f"│ Prob: {token_prob:.3f}", end=' ', flush=True)
+
+                        # Add confidence indicator
+                        confidence = "⭐" if token_prob > 0.5 else "🤔" if token_prob > 0.1 else "❓"
+                        print(f"│ Confidence: {confidence}", flush=True)
+
+                        # Show token type
+                        token_type = (
+                            "WORD" if token_text.strip().isalnum() else
+                            "PUNCT" if token_text in ",.!?-" else
+                            "SPACE" if token_text.isspace() else
+                            "SPECIAL"
+                        )
+                        print(f"│ Type: {token_type:8}", end=' ', flush=True)
+
+                        # Show growing text on new line
+                        if not token_text.isspace() or token_text == " ":
+                            generated_text += token_text
+                            print(f"\n📝 Full text: {generated_text}", flush=True)
+
+                        # In debug mode, show top candidates
+                        if logger.isEnabledFor(logging.DEBUG):
+                            top_k = 5
+                            topk_probs, topk_tokens = torch.topk(probs, top_k)
+                            print("\n🎲 Top candidates:")
+                            for prob, tok in zip(topk_probs, topk_tokens):
+                                tok_text = enc.decode([tok.item()])
+                                print(f"   {tok_text!r:<15} │ ID: {tok.item():5d} │ Prob: {prob:.3f}")
+
                         input_ids = torch.cat([input_ids, next_token.unsqueeze(0)], dim=1)
 
-                        # Simple decode without any special handling
-                        token_text = enc.decode([next_token.item()])
-                        print(token_text, end="", flush=True)
-
-                        # Check for end token
-                        if next_token.item() == enc.eot_token:
+                        if token_id == enc.eot_token:
                             break
 
-                print("\n")
+                        if torch.max(probs) < 0.05:
+                            break
+
+                        time.sleep(0.1)  # Slow down generation
+
+                print("\n" + "="*100)  # Final separator
+                print(f"\n🎯 Final generated text:\n{generated_text}\n")
 
             except KeyboardInterrupt:
                 print("\n\nGeneration interrupted!")

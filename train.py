@@ -20,14 +20,29 @@ logging.basicConfig(
 
 def train():
     """
-    Main training function for the GPT-2 model.
+    Training Process Explained:
 
-    This function handles:
-    1. Data loading and preprocessing
-    2. Model initialization
-    3. Training loop with checkpoints
-    4. Progress monitoring and logging
-    5. Error handling and recovery
+    1. Data Preparation:
+       - Text is split into tokens (words/subwords)
+       - Tokens converted to numbers
+       - Data split into training/validation
+
+    2. Each Training Step:
+       - Take batch of 16 sequences
+       - Model predicts next token for each position
+       - Compare predictions with actual next tokens
+       - Update model weights to improve predictions
+
+    3. Learning Process:
+       - Model gradually learns patterns in text
+       - Early: Basic grammar and spelling
+       - Middle: Sentence structure
+       - Late: Topic coherence and style
+
+    4. Validation:
+       - Check model on unseen data
+       - Prevents memorizing training data
+       - Helps find best model checkpoint
     """
     logging.info("\n" + "="*50)
     logging.info("🚀 Starting GPT-2 Training")
@@ -90,6 +105,11 @@ def train():
         patience=2
     )
 
+    # Add after model initialization
+    logging.info("\n🔬 Model Architecture Details:")
+    for name, param in model.named_parameters():
+        logging.info(f"{name}: {param.shape}, Mean: {param.mean().item():.3f}")
+
     try:
         # Training loop
         for epoch in range(epochs):
@@ -123,6 +143,14 @@ def train():
 
                 # Update progress bar
                 progress_bar.set_postfix(loss=f"{loss.item():.4f}")
+
+                # Inside training loop, after forward pass
+                if i % 100 == 0:  # Every 100 batches
+                    sample_text = tokenizer.decode(x[0][:50].tolist())  # First sequence
+                    logging.info(f"\n📝 Sample training text: {sample_text}")
+                    logging.info(f"🔢 Token statistics:")
+                    logging.info(f"- Unique tokens: {len(set(x[0].tolist()))}")
+                    logging.info(f"- Token range: [{x[0].min().item()}, {x[0].max().item()}]")
 
             avg_loss = total_loss / num_batches
             logging.info(f"Epoch {epoch+1} Average Loss: {avg_loss:.4f}")

@@ -4,12 +4,12 @@ A beginner-friendly implementation of GPT-2 for learning purposes.
 
 ## 🎯 What Are We Building?
 
-Imagine having an AI friend who can:
+A small but powerful language model that can:
 
 - ✍️ Continue writing stories you start
-- 🎵 Generate song lyrics
-- 📝 Help with creative writing
-- 🤔 Answer questions about topics it's learned
+- 🎵 Generate creative text
+- 📝 Help with writing tasks
+- 🤔 Respond to prompts in a coherent way
 
 ## 🎓 Learning Journey
 
@@ -37,8 +37,8 @@ Think of it like this:
 
 ```bash
 # Clone the repository
-git clone https://github.com/AIMLRLab/gpt2.git
-cd gpt2
+git clone https://github.com/yourusername/mini-gpt2.git
+cd mini-gpt2
 
 # Create virtual environment
 python -m venv venv
@@ -47,28 +47,73 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # Install requirements
 pip install -r requirements.txt
 
-# Train the model
-python gpt2.py
+# Add your training data
+echo "Your training text here..." > data.txt
 
-# Chat with the trained model
+# Train the model
+python train.py
+
+# Chat with your model
 python chat.py
 ```
 
 ## 📊 Model Architecture
 
-- Vocabulary Size: 50,257 tokens
-- Embedding Dimension: 768
-- Attention Heads: 4
-- Transformer Layers: 8
-- Context Length: 512 tokens
+Our GPT-2 implementation features:
 
-## 🎯 Training Details
+- **Vocabulary**: 50,257 tokens (standard GPT-2 vocabulary)
+- **Embedding Size**: 768 (determines model's capacity)
+- **Attention Heads**: 4 (for parallel processing)
+- **Layers**: 8 transformer blocks
+- **Context**: 512 tokens (text window size)
+- **Parameters**: ~124M
 
-- Batch Size: 16
-- Learning Rate: 0.001
-- Epochs: 5
-- Optimizer: AdamW
-- Loss: Cross Entropy
+## 🎓 Training Details
+
+Default hyperparameters:
+
+- **Batch Size**: 16 sequences per batch
+- **Learning Rate**: 0.001 (AdamW optimizer)
+- **Epochs**: 5 passes through data
+- **Validation Split**: 90/10 train/val
+- **Checkpointing**: Saves best model
+
+## 💬 Chat Interface
+
+Features:
+
+- Temperature control (0.9) for balanced output
+- Token filtering for better quality
+- Special token handling
+- Graceful interruption
+- Error recovery
+
+Example prompts:
+
+```
+"Tell me a story about..."
+"What are your thoughts on..."
+"Write a poem about..."
+```
+
+## 📝 Files Overview
+
+- `train.py`: Training loop and data handling
+- `gpt2.py`: Model architecture implementation
+- `chat.py`: Interactive interface
+- `requirements.txt`: Dependencies
+- `data.txt`: Your training data (not included)
+
+## 🔍 Logging
+
+The training process logs:
+
+- Training/validation loss
+- Model parameters
+- Training time
+- Checkpoints saved
+
+Logs are saved in: `training_YYYYMMDD_HHMMSS.log`
 
 ## 🎯 Usage
 
@@ -109,20 +154,6 @@ numbers     info         pattern recognition
 - **Learning Rate**: How big steps it takes when learning (too big = stumble, too small = slow)
 - **Model Size**: How many "brain cells" it has (more = smarter but slower)
 
-## 💡 Example Usage
-
-```python
-from gpt2 import GPT2
-
-# Create AI model
-model = GPT2()
-
-# Generate text
-prompt = "Once upon a time"
-generated_text = model.generate(prompt, max_length=100)
-print(generated_text)
-```
-
 ## 🎮 Playground
 
 Try these prompts:
@@ -159,9 +190,15 @@ Join our learning journey!
 5. Push to the branch (`git push origin feature/AmazingFeature`)
 6. Open a Pull Request
 
-## 📝 License
+## 📄 License
 
-MIT License
+MIT License - See LICENSE file
+
+## 🙋‍♂️ Support
+
+- Open an issue for bugs
+- Start a discussion for questions
+- PRs welcome!
 
 ## 🙋‍♂️ Questions?
 
