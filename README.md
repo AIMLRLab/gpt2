@@ -1,6 +1,6 @@
-# 🤖 Build Your Own GPT-2: A Beginner's Guide
+# 🤖 Mini GPT-2 Implementation
 
-Welcome to a fun, educational journey of building GPT-2 from scratch! This project breaks down the "scary" AI concepts into simple, understandable pieces - like building with LEGOs!
+A beginner-friendly implementation of GPT-2 for learning purposes.
 
 ## 🎯 What Are We Building?
 
@@ -33,30 +33,56 @@ Think of it like this:
 3. 🔍 Learns patterns (like how words go together)
 4. ✍️ Uses patterns to write new text
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.8 or newer
-- Basic Python knowledge
-- Curiosity about AI!
-
-### Quick Start
+## 🚀 Quick Start
 
 ```bash
-# 1. Clone this project
+# Clone the repository
 git clone https://github.com/AIMLRLab/gpt2.git
+cd gpt2
 
-# 2. Create and activate virtual environment (recommended)
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# 3. Install required packages
+# Install requirements
 pip install -r requirements.txt
 
-# 4. Run the training
+# Train the model
 python gpt2.py
+
+# Chat with the trained model
+python chat.py
 ```
+
+## 📊 Model Architecture
+
+- Vocabulary Size: 50,257 tokens
+- Embedding Dimension: 768
+- Attention Heads: 4
+- Transformer Layers: 8
+- Context Length: 512 tokens
+
+## 🎯 Training Details
+
+- Batch Size: 16
+- Learning Rate: 0.001
+- Epochs: 5
+- Optimizer: AdamW
+- Loss: Cross Entropy
+
+## 🎯 Usage
+
+After training, chat with your model:
+
+```bash
+python chat.py
+```
+
+Example prompts:
+
+- "Once upon a time"
+- "The future of AI is"
+- "The meaning of life is"
 
 ## 📊 Model Details
 
@@ -97,16 +123,6 @@ generated_text = model.generate(prompt, max_length=100)
 print(generated_text)
 ```
 
-## �� Training Progress
-
-Watch your model learn:
-
-```
-Epoch 1: Loss 10.987 → "random gibberish"
-Epoch 100: Loss 3.456 → "readable text"
-Epoch 1000: Loss 2.123 → "coherent stories"
-```
-
 ## 🎮 Playground
 
 Try these prompts:
@@ -145,7 +161,7 @@ Join our learning journey!
 
 ## 📝 License
 
-MIT - Use it, learn from it, share it!
+MIT License
 
 ## 🙋‍♂️ Questions?
 
@@ -154,3 +170,9 @@ MIT - Use it, learn from it, share it!
 - Join our Discord community
 
 Remember: The goal is learning - don't be afraid to experiment and make mistakes!
+
+## ⚠️ Known Issues
+
+1. Training might seem to hang after "Training Progress" - this is normal, it's generating visualizations
+2. First generation might be slow as the model loads
+3. GPU recommended for faster training
