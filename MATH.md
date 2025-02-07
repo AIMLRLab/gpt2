@@ -68,6 +68,7 @@ Each mathematical concept links to its implementation in our codebase.
 
    - 4.1 Self-Attention: The Core Idea
      - 4.1.1 Query, Key, Value Concept
+       [Implementation in gpt2.py#L44-L89]
      - 4.1.2 Basic Attention Formula
    - 4.2 Matrix Dimensions in Attention
 
@@ -146,8 +147,7 @@ Each mathematical concept links to its implementation in our codebase.
 
 ### 1.1 What is a Vector?
 
-[Tokenization Implementation](/train.py#L52-L68)
-[Vector Operations](/gpt2.py#L15-L42)
+[Vector Implementation in GPT](/gpt2.py#L16-L40) # GPT class initialization with vector operations
 
 A vector is an ordered list of numbers. In machine learning, we use vectors to represent things mathematically.
 
@@ -167,7 +167,7 @@ x = [x₁, x₂, ..., xₙ]
 
 ### 1.2 Vector Operations
 
-[Vector Arithmetic](/gpt2.py#L44-L89)
+[Vector Operations in MultiHeadAttention](/gpt2.py#L241-L280) # Matrix/vector operations in attention
 
 #### 1.2.1 Vector Addition
 
@@ -221,7 +221,7 @@ Formally: A matrix A ∈ ℝᵐˣⁿ has m rows and n columns.
 
 ### 2.1 Linear Transformation
 
-[Linear Layer](/model.py#L91-L120)
+[Linear Layer Implementation](/gpt2.py#L65-L70) # Token and position embeddings
 
 The most basic operation in neural networks is the linear transformation:
 y = Wx + b
@@ -254,7 +254,7 @@ Why we need it: Without ReLU or similar functions, neural networks could only le
 
 #### 2.2.2 GELU
 
-[→ model.py:137-152] GELU implementation
+[GELU Implementation](/gpt2.py#L214-L220) # GELU in TransformerBlock's MLP
 
 GELU(x) = x × P(X ≤ x)
 where P(X ≤ x) is the cumulative distribution function of the standard normal distribution.
@@ -270,7 +270,7 @@ GELU(x) ≈ 0.5x(1 + tanh(√(2/π)(x + 0.044715x³)))
 
 #### 3.1.1 Softmax Function
 
-[Softmax Implementation](/model.py#L154-L180)
+[Softmax Implementation](/gpt2.py#L273-L275) # Attention softmax computation
 
 Converts raw scores into probabilities:
 
@@ -290,7 +290,7 @@ Properties:
 
 ### 3.2 Cross-Entropy Loss
 
-[Loss Function](/model.py#L182-L200)
+[Loss Function](/gpt2.py#L113-L115) # Cross entropy loss in forward pass
 
 H(p,q) = -∑ᵢ p(i)log(q(i))
 
@@ -310,7 +310,7 @@ Loss = -(1×log(0.8) + 0×log(0.1) + 0×log(0.1)) = 0.223
 
 #### 4.1.1 Query, Key, Value Concept
 
-[QKV Projections](/model.py#L232-L250)
+[MultiHeadAttention Implementation](/gpt2.py#L241-L280) # Complete attention mechanism
 
 Think of attention like looking up information in a database:
 
@@ -356,7 +356,7 @@ For sequence length n and embedding dimension d:
 
 ### 5.1 The Need for Position Information
 
-[Position Encoding Implementation](/model.py#L302-L320)
+[Position Encoding Implementation](/gpt2.py#L166-L189) # Sinusoidal position encoding
 
 Unlike humans reading left-to-right, transformers process all words at once. Position encodings tell the model where each word is in the sentence.
 
@@ -392,7 +392,7 @@ Each position gets a unique "fingerprint" that the model can recognize.
 
 #### 6.1.1 Projection Matrices
 
-[Single Head Implementation](/model.py#L352-L380)
+[Single Head Implementation](/gpt2.py#L269-L277) # Single attention head computation
 
 Think of these as different "viewpoints" or "perspectives" on the same information:
 
@@ -425,7 +425,7 @@ When you look at a painting, you might focus on:
 
 ### 6.2 Multi-Head Mechanism
 
-[Multi-Head Implementation](/model.py#L382-L410)
+[Multi-Head Implementation](/gpt2.py#L241-L280) # Multi-head attention class
 
 Just like having multiple experts look at the same problem from different angles:
 
@@ -436,7 +436,7 @@ headᵢ = Attention(XWᵠᵢ, XWᵏᵢ, XWᵛᵢ)
 
 ### 7.1 Statistical Normalization
 
-[Layer Norm Implementation](/model.py#L412-L440)
+[Layer Norm Implementation](/gpt2.py#L282-L309) # LayerNorm class
 
 #### 7.1.1 Mean and Variance
 
@@ -477,7 +477,7 @@ These parameters let the model adjust the normalization for each layer, like fin
 
 ### 8.1 Forward Pass Computation
 
-[Forward Pass Implementation](/model.py#L442-L470)
+[Forward Pass Implementation](/gpt2.py#L72-L117) # Model forward pass
 
 #### 8.1.1 Input Processing
 
@@ -512,7 +512,7 @@ Think of each transformer block like a station in an assembly line:
 
 ### 8.2 Computational Complexity
 
-[Performance Monitoring](/train.py#L150-L180)
+[Performance Monitoring](/train.py#L150-L180) # Training loop with performance metrics
 
 #### 8.2.1 Attention Complexity
 
@@ -638,7 +638,7 @@ Think of this like having a speed limit:
 
 ### 10.1 Adam Optimizer Mathematics
 
-[Adam Implementation](/train.py#L262-L290)
+[Optimizer Configuration](/train.py#L366-L384) # Adam optimizer configuration
 
 #### 10.1.1 Update Rules
 

@@ -227,7 +227,7 @@ class TransformerBlock(nn.Module):
 
 class MultiHeadAttention(nn.Module):
     """
-    Implementation of Multi-Head Attention (MATH.md Section 4)
+    Implementation of Multi-Head Attention (MATH.md Section 4.1)
 
     Mathematical Formula:
     Attention(Q,K,V) = softmax(QKᵀ/√d)V
@@ -242,6 +242,11 @@ class MultiHeadAttention(nn.Module):
     - Input: (batch_size, seq_len, d_model)
     - Q,K,V: (batch_size, n_heads, seq_len, head_dim)
     - Output: (batch_size, seq_len, d_model)
+
+    For detailed mathematical explanation, see:
+    - MATH.md Section 4.1: Self-Attention: The Core Idea
+    - MATH.md Section 4.1.1: Query, Key, Value Concept
+    - MATH.md Section 4.1.2: Basic Attention Formula
     """
 
     def __init__(self, d_model, n_heads):
