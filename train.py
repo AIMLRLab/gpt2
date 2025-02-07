@@ -11,6 +11,10 @@ import traceback
 
 def train():
     """Training Process Implementation"""
+    # Create necessary directories
+    os.makedirs('checkpoints', exist_ok=True)
+    os.makedirs('logs', exist_ok=True)
+
     # Configure logging with consistent format
     logging.basicConfig(
         level=logging.INFO,
