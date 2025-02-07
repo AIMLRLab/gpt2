@@ -40,7 +40,6 @@ data.txt
 
 # Logs
 *.log
-logs/
 tensorboard/
 
 # OS

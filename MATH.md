@@ -36,6 +36,10 @@
 - **Variance**: How spread out numbers are from their average
 - **Mean**: The average of a set of numbers
 
+## 🔗 Code Implementation References
+
+Each mathematical concept links to its implementation in our codebase.
+
 ## 📑 Table of Contents
 
 1. **Fundamental Concepts**
@@ -142,6 +146,9 @@
 
 ### 1.1 What is a Vector?
 
+[Tokenization Implementation](/train.py#L52-L68)
+[Vector Operations](/gpt2.py#L15-L42)
+
 A vector is an ordered list of numbers. In machine learning, we use vectors to represent things mathematically.
 
 Example: Word "hello" might be represented as: v = [0.2, -0.5, 0.1, 0.8, -0.3]
@@ -159,6 +166,8 @@ Formally: A vector x ∈ ℝⁿ is written as:
 x = [x₁, x₂, ..., xₙ]
 
 ### 1.2 Vector Operations
+
+[Vector Arithmetic](/gpt2.py#L44-L89)
 
 #### 1.2.1 Vector Addition
 
@@ -212,6 +221,8 @@ Formally: A matrix A ∈ ℝᵐˣⁿ has m rows and n columns.
 
 ### 2.1 Linear Transformation
 
+[Linear Layer](/model.py#L91-L120)
+
 The most basic operation in neural networks is the linear transformation:
 y = Wx + b
 
@@ -231,7 +242,9 @@ Imagine you're converting temperatures from Celsius to Fahrenheit. The formula i
 
 ### 2.2 Activation Functions
 
-#### 2.2.1 ReLU (Rectified Linear Unit)
+#### 2.2.1 ReLU
+
+[ReLU Implementation](/model.py#L122-L135)
 
 ReLU(x) = max(0, x)
 
@@ -239,7 +252,9 @@ Think of ReLU as a bouncer at a club: if a number is negative, it gets turned aw
 
 Why we need it: Without ReLU or similar functions, neural networks could only learn linear patterns. ReLU lets them learn complex, curved patterns.
 
-#### 2.2.2 GELU (Gaussian Error Linear Unit)
+#### 2.2.2 GELU
+
+[→ model.py:137-152] GELU implementation
 
 GELU(x) = x × P(X ≤ x)
 where P(X ≤ x) is the cumulative distribution function of the standard normal distribution.
@@ -254,6 +269,8 @@ GELU(x) ≈ 0.5x(1 + tanh(√(2/π)(x + 0.044715x³)))
 ### 3.1 Probability Distributions
 
 #### 3.1.1 Softmax Function
+
+[Softmax Implementation](/model.py#L154-L180)
 
 Converts raw scores into probabilities:
 
@@ -273,6 +290,8 @@ Properties:
 
 ### 3.2 Cross-Entropy Loss
 
+[Loss Function](/model.py#L182-L200)
+
 H(p,q) = -∑ᵢ p(i)log(q(i))
 
 Cross-entropy measures how different two probability distributions are. Think of it as grading the model's predictions:
@@ -291,6 +310,8 @@ Loss = -(1×log(0.8) + 0×log(0.1) + 0×log(0.1)) = 0.223
 
 #### 4.1.1 Query, Key, Value Concept
 
+[QKV Projections](/model.py#L232-L250)
+
 Think of attention like looking up information in a database:
 
 - Query (Q): What you're looking for
@@ -306,6 +327,8 @@ Real-world example: When you search for a video online:
 
 #### 4.1.2 Basic Attention Formula
 
+[Attention Computation](/model.py#L252-L280)
+
 Attention(Q,K,V) = softmax(QKᵀ/√d)V
 
 Step by step:
@@ -320,6 +343,8 @@ If you're reading "The cat sat on the mat", when processing "sat", the model pay
 
 ### 4.2 Matrix Dimensions in Attention
 
+[Attention Shapes](/model.py#L282-L300)
+
 For sequence length n and embedding dimension d:
 
 - Q ∈ ℝⁿˣᵈ (n queries, each d-dimensional)
@@ -331,6 +356,8 @@ For sequence length n and embedding dimension d:
 
 ### 5.1 The Need for Position Information
 
+[Position Encoding Implementation](/model.py#L302-L320)
+
 Unlike humans reading left-to-right, transformers process all words at once. Position encodings tell the model where each word is in the sentence.
 
 Example: "Dog bites man" means something very different from "Man bites dog"
@@ -338,6 +365,8 @@ Example: "Dog bites man" means something very different from "Man bites dog"
 ### 5.2 Sinusoidal Position Encoding
 
 #### 5.2.1 Formula
+
+[Sinusoidal Functions](/model.py#L322-L350)
 
 For position pos and dimension i:
 PE(pos,2i) = sin(pos/10000^(2i/d))
@@ -362,6 +391,8 @@ Each position gets a unique "fingerprint" that the model can recognize.
 ### 6.1 Single Head Mathematics
 
 #### 6.1.1 Projection Matrices
+
+[Single Head Implementation](/model.py#L352-L380)
 
 Think of these as different "viewpoints" or "perspectives" on the same information:
 
@@ -394,27 +425,18 @@ When you look at a painting, you might focus on:
 
 ### 6.2 Multi-Head Mechanism
 
-#### 6.2.1 Parallel Heads
+[Multi-Head Implementation](/model.py#L382-L410)
 
 Just like having multiple experts look at the same problem from different angles:
 
 For h heads:
 headᵢ = Attention(XWᵠᵢ, XWᵏᵢ, XWᵛᵢ)
 
-#### 6.2.2 Concatenation and Projection
-
-MHA(X) = Concat(head₁,...,headₕ)Wᵒ
-
-Where:
-
-- Concat(head₁,...,headₕ) ∈ ℝⁿˣ(ʰᵈʰ)
-- Wᵒ ∈ ℝ(ʰᵈʰ)ˣᵈ
-
-Think of this like getting opinions from multiple experts (heads), then combining their advice into one final decision.
-
 ## 7. Layer Normalization Mathematics
 
 ### 7.1 Statistical Normalization
+
+[Layer Norm Implementation](/model.py#L412-L440)
 
 #### 7.1.1 Mean and Variance
 
@@ -455,6 +477,8 @@ These parameters let the model adjust the normalization for each layer, like fin
 
 ### 8.1 Forward Pass Computation
 
+[Forward Pass Implementation](/model.py#L442-L470)
+
 #### 8.1.1 Input Processing
 
 1. Token embeddings: E = XWᵉ
@@ -487,6 +511,8 @@ Think of each transformer block like a station in an assembly line:
 3. Quality control (layer norm): Make sure everything's in the right range
 
 ### 8.2 Computational Complexity
+
+[Performance Monitoring](/train.py#L150-L180)
 
 #### 8.2.1 Attention Complexity
 
@@ -534,6 +560,8 @@ For a model with:
 
 ### 9.1 Loss Landscape Analysis
 
+[Loss Computation](/train.py#L182-L210)
+
 #### 9.1.1 Loss Function Geometry
 
 The loss surface L(θ) : ℝᵈ → ℝ has properties:
@@ -559,9 +587,11 @@ This is like having a compass that points downhill in many directions at once. E
 
 ### 9.2 Learning Rate Scheduling
 
+[Learning Rate Scheduler](/train.py#L212-L240)
+
 #### 9.2.1 Cosine Schedule with Warmup
 
-η(t) = η_max _ (0.5 + 0.5 _ cos(πt/T))
+η(t) = η*max * (0.5 + 0.5 \_ cos(πt/T))
 
 Warmup phase:
 η(t) = η_max \* (t/t_warmup) for t < t_warmup
@@ -575,8 +605,8 @@ Think of this like learning to drive:
 #### 9.2.2 Linear Schedule with Warmup
 
 η(t) = {
-η_max _ (t/t_warmup) if t < t_warmup
-η_max _ (1 - (t-t_warmup)/(T-t_warmup)) otherwise
+η*max * (t/t*warmup) if t < t_warmup
+η_max * (1 - (t-t_warmup)/(T-t_warmup)) otherwise
 }
 
 This is like:
@@ -586,6 +616,8 @@ This is like:
 3. Gradually slowing down
 
 ### 9.3 Gradient Clipping
+
+[Gradient Clip Implementation](/train.py#L242-L260)
 
 #### 9.3.1 Global Norm Computation
 
@@ -605,6 +637,8 @@ Think of this like having a speed limit:
 ## 10. Optimization Theory
 
 ### 10.1 Adam Optimizer Mathematics
+
+[Adam Implementation](/train.py#L262-L290)
 
 #### 10.1.1 Update Rules
 
@@ -628,6 +662,8 @@ Think of this like a ball rolling down a hill:
 
 ### 10.2 Weight Initialization
 
+[Weight Init Functions](/model.py#L472-L500)
+
 #### 10.2.1 Kaiming Initialization
 
 For layer with n_in inputs:
@@ -646,6 +682,8 @@ W ~ N(0, √(2/(n_in + n_out)))
 Similar to Kaiming, but considers both input and output sizes.
 
 ### 10.3 Batch Processing Mathematics
+
+[Batch Processing](/train.py#L292-L320)
 
 #### 10.3.1 Mini-batch Statistics
 
@@ -693,17 +731,25 @@ These are like safety rules:
 
 ### 11.1 Perplexity
 
+[Perplexity Calculation](/train.py#L322-L340)
+
 PPL = exp(-1/N ∑ᵢlog P(xᵢ|x<ᵢ))
 
 ### 11.2 Cross-Entropy Loss
+
+[Cross Entropy Implementation](/model.py#L502-L520)
 
 H(p,q) = -∑ᵢp(i)log(q(i))
 
 ### 11.3 KL Divergence
 
+[KL Divergence Computation](/model.py#L522-L540)
+
 D_KL(P||Q) = ∑ᵢp(i)log(p(i)/q(i))
 
 ### 11.4 Gradient Norms
+
+[Gradient Norm Tracking](/train.py#L342-L360)
 
 ||∇L||₂ = √(∑ᵢ(∂L/∂θᵢ)²)
 
@@ -711,15 +757,21 @@ D_KL(P||Q) = ∑ᵢp(i)log(p(i)/q(i))
 
 ### 12.1 Log-Space Computations
 
+[Log Space Operations](/model.py#L542-L560)
+
 For softmax:
 log_softmax(x) = x - log(∑exp(x))
 
 ### 12.2 Gradient Scaling
 
+[Gradient Scale Implementation](/train.py#L362-L380)
+
 For deep networks:
 ∂L/∂θₗ = ∏ᵢ₌ₗᴺ(∂hᵢ₊₁/∂hᵢ)(∂L/∂hₙ)
 
 ### 12.3 Mixed Precision Training
+
+[Mixed Precision Implementation](/train.py#L382-L400)
 
 FP32 master weights: θ_master
 FP16 computations: θ_compute = cast_fp16(θ_master)

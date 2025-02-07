@@ -37,8 +37,8 @@ Think of it like this:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mini-gpt2.git
-cd mini-gpt2
+git clone https://github.com/AIMLRLab/gpt2.git
+cd gpt2
 
 # Create virtual environment
 python -m venv venv
@@ -46,9 +46,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install requirements
 pip install -r requirements.txt
-
-# Add your training data
-echo "Your training text here..." > data.txt
 
 # Train the model
 python train.py
@@ -98,22 +95,36 @@ Example prompts:
 
 ## 📝 Files Overview
 
-- `train.py`: Training loop and data handling
-- `gpt2.py`: Model architecture implementation
-- `chat.py`: Interactive interface
-- `requirements.txt`: Dependencies
-- `data.txt`: Your training data (not included)
+- `train.py`: Training loop with educational logging and visualization
+- `gpt2.py`: GPT-2 model architecture with detailed mathematical implementations
+- `chat.py`: Interactive chat interface with token-by-token generation display
+- `requirements.txt`: Core dependencies (PyTorch, tiktoken, etc.)
+- `data.txt`: Training data file (not included)
+- `MATH.md`: Mathematical foundations and detailed explanations
 
 ## 🔍 Logging
 
 The training process logs:
 
-- Training/validation loss
-- Model parameters
-- Training time
-- Checkpoints saved
+- Training/validation loss per epoch
+- Model architecture details
+- Batch statistics and sample inputs
+- Hyperparameter configurations
+- Checkpoint information
+- Token-level generation details (in chat mode)
 
-Logs are saved in: `training_YYYYMMDD_HHMMSS.log`
+Logs are saved in:
+
+- Training logs: `logs/training_YYYYMMDD_HHMMSS.log`
+- Chat logs: `logs/chat_YYYYMMDD_HHMMSS.log`
+
+Key logging features:
+
+- Detailed progress tracking
+- Educational explanations
+- Debug mode for attention patterns
+- Token probability visualization
+- Error handling and recovery
 
 ## 🎯 Usage
 
