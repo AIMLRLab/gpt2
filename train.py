@@ -33,7 +33,6 @@ def train():
     logging.info("="*100)
 
     # Safe device detection
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logging.info(f"Using device: {device}")
 
     # Data loading with detailed statistics
@@ -214,11 +213,13 @@ Setting up the learning process with carefully chosen parameters:""")
 """)
 
             # Save checkpoint
-            torch.save({
+            checkpoint = {
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
-                'loss': avg_loss,
+                'scheduler_state_dict': scheduler.state_dict(),
+                'train_loss': avg_loss,
+                'val_loss': val_loss,
                 'config': {
                     'batch_size': batch_size,
                     'sequence_length': sequence_length,
@@ -226,7 +227,15 @@ Setting up the learning process with carefully chosen parameters:""")
                     'd_model': model.d_model,
                     'n_heads': model.n_heads,
                 }
-            }, f'checkpoints/model_epoch_{epoch+1}.pt')
+            }
+            torch.save(checkpoint, f'checkpoints/model_epoch_{epoch+1}.pt')
+
+            # Evaluate model on validation data
+            val_loss = evaluate_model(model, val_data, batch_size, sequence_length)
+            scheduler.step(val_loss)  # Update learning rate based on validation loss
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                # Save best model checkpoint
 
     except Exception as e:
         logging.error("\n❌ Error Encountered")
